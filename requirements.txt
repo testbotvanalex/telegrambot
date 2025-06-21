@@ -39,7 +39,6 @@ oauthlib==3.2.2
 openai==1.82.1
 openpyxl==3.1.5
 packaging==25.0
-pandas==1.5.3
 pillow==11.2.1
 priority==2.0.0
 propcache==0.3.1
