@@ -17,13 +17,13 @@
         rm -rf /var/lib/apt/lists/*
 
     # Копируем requirements.txt в рабочую директорию
-    COPY requirements.txt .
+    COPY requirements.txt.
 
     # Устанавливаем зависимости Python
     RUN pip install --no-cache-dir -r requirements.txt
 
     # Копируем остальную часть вашего приложения в рабочую директорию
-    COPY . .
+    COPY..
 
     # Убедитесь, что папки пакетов содержат __init__.py
     RUN mkdir -p db && touch db/__init__.py
