@@ -6,10 +6,8 @@ from aiogram.types import Message
 
 from db.db import get_store_by_telegram_id
 from keyboards.menu import get_main_menu
-from config.config import TELEGRAM_ADMIN_ID, TELEGRAM_MOD_GROUP_ID
 from utils.role_checker import is_admin
 
-# Importeer handlers die door knoppen zullen worden aangeroepen
 from handlers.my_requests import my_requests_handler
 from handlers.contact import contact_handler
 from handlers.help import help_handler
@@ -21,7 +19,7 @@ from handlers.stock_upload import ask_excel_file
 from handlers.vin_ocr import prompt_photo
 from handlers.admin.admin_ads import start_new_ad
 from handlers.admin.admin_clients import new_client
-from handlers.stock_search import start_stock_search # NIEUW: Importeer de nieuwe handler
+from handlers.stock_search import start_stock_search
 
 router = Router()
 
@@ -38,7 +36,7 @@ async def show_menu(message: types.Message, state: FSMContext):
     "🧾 Demande groupée",
     "📊 Charger le stock",
     "📸 Lire un VIN",
-    "🔎 Rechercher stock", # NIEUW: Knoptekst toegevoegd
+    "🔎 Rechercher stock",
     "➕ Nouvelle Pub",
     "➕ Nouveau Client"
 }))
@@ -61,19 +59,17 @@ async def handle_reply_buttons(message: types.Message, state: FSMContext):
             await ask_excel_file(message)
         case "📸 Lire un VIN":
             await prompt_photo(message)
-        case "🔎 Rechercher stock": # NIEUW: Afhandeling van de nieuwe knop
-            await start_stock_search(message, state) # Roep de nieuwe handler aan
+        case "🔎 Rechercher stock":
+            await start_stock_search(message, state)
         case "➕ Nouvelle Pub":
             await start_new_ad(message, state)
         case "➕ Nouveau Client":
             await new_client(message, state)
 
-
 @router.message(StateFilter(None))
 async def fallback_menu(message: types.Message, state: FSMContext):
-    print(f"DEBUG_MN: fallback_menu heeft tekst onderschept: '{message.text}' van gebruiker ID: {message.from_user.id}")
+    print(f"[DEBUG] Texte non reconnu: '{message.text}' de {message.from_user.id}")
     await try_show_menu(message, state)
-
 
 async def try_show_menu(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
@@ -84,23 +80,23 @@ async def try_show_menu(message: types.Message, state: FSMContext):
         try:
             store = await get_store_by_telegram_id(user_id)
         except Exception as e:
-            await message.answer(f"❌ Fout bij het ophalen van informatie. Probeer later opnieuw. Fout: {e}")
+            await message.answer(f"❌ Erreur lors de la récupération des données. Réessayez plus tard.\n\n{e}")
             return
 
         if not store:
             await message.answer(
-                "👋 Welkom bij het B2B-netwerk voor auto-onderdelen.\n\n"
-                "Om te beginnen, registreer uw winkel."
+                "👋 Bienvenue dans le réseau B2B de pièces automobiles.\n\n"
+                "Veuillez enregistrer votre magasin pour commencer."
             )
             await register_store(message, state)
             return
 
         if not store.get("approved", False):
-            await message.answer("⏳ Uw registratie is in afwachting van validatie. Even geduld alstublieft.")
+            await message.answer("⏳ Votre inscription est en cours de validation. Merci de patienter.")
             return
         role = "store"
 
     await message.answer(
-        "📋 Kies een optie hieronder.",
+        "📋 Choisissez une option ci-dessous.",
         reply_markup=get_main_menu(role)
     )
