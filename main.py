@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
+from aiogram.client.default import DefaultBotProperties
 from aiogram.webhook.aiohttp_server import setup_application
 
 # 🔧 Загрузка переменных окружения
@@ -19,7 +20,10 @@ if not TELEGRAM_BOT_TOKEN or not WEBHOOK_URL:
     raise RuntimeError("TELEGRAM_BOT_TOKEN и WEBHOOK_URL должны быть заданы!")
 
 # 🤖 Инициализация
-bot = Bot(token=TELEGRAM_BOT_TOKEN, parse_mode=ParseMode.HTML)
+bot = Bot(
+    token=TELEGRAM_BOT_TOKEN,
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+)
 dp = Dispatcher()
 
 # 🟢 Хендлеры
