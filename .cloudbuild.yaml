@@ -1,0 +1,34 @@
+steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud run deploy telegrambot \
+          --region europe-west1 \
+          --allow-unauthenticated \
+          --source . \
+          --set-env-vars TELEGRAM_BOT_TOKEN=$$TELEGRAM_BOT_TOKEN \
+          --set-env-vars TELEGRAM_ADMIN_ID=$$TELEGRAM_ADMIN_ID \
+          --set-env-vars TELEGRAM_ADMIN_USER_IDS=$$TELEGRAM_ADMIN_USER_IDS \
+          --set-env-vars ADMIN_TELEGRAM_ID=$$ADMIN_TELEGRAM_ID \
+          --set-env-vars TELEGRAM_ADMIN_GROUP_ID=$$TELEGRAM_ADMIN_GROUP_ID \
+          --set-env-vars TELEGRAM_MOD_GROUP_ID=$$TELEGRAM_MOD_GROUP_ID \
+          --set-env-vars OPENAI_API_KEY=$$OPENAI_API_KEY \
+          --set-env-vars DB_FILE=./bot.db \
+          --set-env-vars WEBHOOK_URL=$$WEBHOOK_URL \
+          --set-env-vars WEBHOOK_PATH=$$WEBHOOK_PATH \
+          --set-env-vars PORT=8080 \
+          --set-env-vars TEST_STORE_ID=$$TEST_STORE_ID \
+          --set-env-vars ENV=cloud
+substitutions:
+  _TELEGRAM_BOT_TOKEN: '7660530635:AAHDfIyx5qCKL85A5EaGigJRQF6q5uUMAno'
+  _TELEGRAM_ADMIN_ID: '7685820095'
+  _TELEGRAM_ADMIN_USER_IDS: '7685820095'
+  _ADMIN_TELEGRAM_ID: '7685820095'
+  _TELEGRAM_ADMIN_GROUP_ID: '-1002735297052'
+  _TELEGRAM_MOD_GROUP_ID: '-1002856597907'
+  _OPENAI_API_KEY: 'sk-proj-...'
+  _WEBHOOK_URL: 'https://telegrambot-452089041705.europe-west1.run.app'
+  _WEBHOOK_PATH: '/webhook'
+  _TEST_STORE_ID: '6467617164'
